@@ -1,11 +1,10 @@
-"use strict";
-
-module.exports = function distance(a, b) {
-  let count = 0;
-  for (let i = 0; i < a.length; i++) {
-    if (a[i] !== b[i]) {
+function distance(a, b) {
+  return a.reduce((count, value, index) => {
+    if (value !== b[index]) {
       count++;
     }
-  }
-  return count;
-};
+    return count;
+  }, 0);
+}
+
+export default distance;
