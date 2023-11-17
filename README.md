@@ -1,40 +1,28 @@
 # sharp-phash
 
-Sharp based implementation of perceptual hash (phash) algorithm described [there](http://www.hackerfactor.com/blog/?/archives/432-Looks-Like-It.html).
+Sharp-based implementation of perceptual hash (phash) algorithm described [there](http://www.hackerfactor.com/blog/?/archives/432-Looks-Like-It.html).
 
 ## Installation
 
 ```sh
-yarn add sharp sharp-phash
-# or
-npm i sharp sharp-phash
+yarn add sharp-phash
 ```
 
-You **must** install **sharp** yourself.
-
 ## How to use
+Takes in file buffer and returns a promise that resolves to a binary phash.
 
 ```js
-"use strict";
+import {phash, distance} from 'sharp-phash'
 
-const fs = require("fs");
-const Promise = require("bluebird");
+import fs from 'fs/promises'
 
-const assert = require("assert");
+const main = async () => {
+    const img1 = await fs.readFile('./test.png')
+    const img2 = await fs.readFile('./test1.png')
 
-const phash = require("sharp-phash");
-const dist = require("sharp-phash/distance");
-
-const img1 = fs.readFileSync("./Lenna.png");
-const img2 = fs.readFileSync("./Lenna.jpg");
-const img3 = fs.readFileSync("./Lenna-sepia.jpg");
-
-Promise.all([phash(img1), phash(img2), phash(img3)]).then(
-  ([hash1, hash2, hash3]) => {
-    // hash returned is 64 characters length string with 0 and 1 only
-    assert(dist(hash1, hash2) < 5);
-    assert(dist(hash2, hash3) < 5);
-    assert(dist(hash3, hash1) < 5);
-  }
-);
+    const hash1 = await phash(img1)
+    const hash2 = await phash(img2)
+    assert(dist(hash1, hash2) < 5)
+}
+main()
 ```

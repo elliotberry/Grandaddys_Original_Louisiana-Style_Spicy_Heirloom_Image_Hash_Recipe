@@ -1,65 +1,55 @@
 {
-  "name": "sharp-phash",
-  "version": "2.1.0",
-  "description": "sharp based perceptual hash implementation",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/btd/sharp-phash"
-  },
-  "type": "module",
-  "main": "index.js",
-  "scripts": {
-    "test": "node test.js"
-  },
-  "files": [
-    "*.js",
-    "*.md"
-  ],
-  "keywords": [
-    "sharp",
-    "phash",
-    "hash",
-    "image",
-    "perceptual"
-  ],
-  "author": "Denis Bardadym <bardadymchik@gmail.com>",
-  "license": "MIT",
-  "peerDependencies": {
-    "sharp": ">= 0.25.4"
-  },
-  "devDependencies": {
-    "eslint": "^8.29.0",
+    "name": "sharp-phash",
+    "version": "2.2.0",
+    "description": "Perceptual hash implementation",
+    "type": "module",
+    "main": "./index.js",
+    "scripts": {
+        "test": "node test.js"
+    },
+    "files": [
+        "*.js",
+        "*.md"
+    ],
+    "keywords": [
+        "sharp",
+        "phash",
+        "hash",
+        "image",
+        "perceptual"
+    ],
+    "author": "Denis Bardadym <bardadymchik@gmail.com>, EB",
+    "license": "MIT",
+    "devDependencies": {
+        "eslint": "^8.29.0",
         "eslint-config-prettier": "^8.5.0",
         "prettier": "^2.7.1",
-    "sharp": "^0.32.6"
-  },
-  "prettier": {
-    "trailingComma": "es5",
-    "tabWidth": 4,
-    "semi": false,
-    "singleQuote": true
-},
-"eslintConfig": {
-    "root": true,
-    "parserOptions": {
-        "ecmaVersion": 12,
-        "sourceType": "module"
+        "sharp": "^0.32.6"
     },
-    "extends": [
-        "eslint:recommended",
-        "prettier"
-    ],
-    "env": {
-        "es2021": true,
-        "node": true,
-        "es6": true
+    "prettier": {
+        "trailingComma": "es5",
+        "tabWidth": 4,
+        "semi": false,
+        "singleQuote": true
     },
-    "rules": {
-        "no-unused-vars": "warn",
-        "no-console": "off"
+    "eslintConfig": {
+        "root": true,
+        "parserOptions": {
+            "ecmaVersion": 12,
+            "sourceType": "module"
+        },
+        "extends": [
+            "eslint:recommended",
+            "prettier"
+        ],
+        "env": {
+            "es2021": true,
+            "node": true,
+            "es6": true
+        },
+        "rules": {
+            "no-unused-vars": "warn",
+            "no-console": "off"
+        }
     }
-},
-  "engines": {
-    "node": ">= 10"
-  }
 }

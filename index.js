@@ -1,4 +1,5 @@
 import sharp from 'sharp'
+import distance from './distance.js'
 
 const sampleSize = 32
 const lowSize = 8
@@ -53,8 +54,8 @@ function applyDCT(f, size) {
  * @param {object} sharpOptions - The options to be passed to the sharp library.
  * @returns {Promise<string>} The calculated perceptual hash of the image.
  */
-export default async function phash(image, sharpOptions, digest = 'hex') {
-    const data = await sharp(image, sharpOptions)
+async function phash(image, digest = 'binary') {
+    const data = await sharp(image, {})
         .greyscale()
         .resize(sampleSize, sampleSize, { fit: 'fill' })
         .rotate()
@@ -105,3 +106,5 @@ export default async function phash(image, sharpOptions, digest = 'hex') {
         return fingerprintHex
     }
 }
+
+export { phash, distance}
