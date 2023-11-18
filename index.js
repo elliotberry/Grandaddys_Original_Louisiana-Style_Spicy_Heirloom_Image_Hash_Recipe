@@ -1,8 +1,18 @@
 import sharp from 'sharp'
-import distance from './distance.js'
 
 const sampleSize = 32
 const lowSize = 8
+
+const calculateDistance = function (a, b) {
+    a = a.split('')
+    b = b.split('')
+    return a.reduce((count, value, index) => {
+        if (value !== b[index]) {
+            count++
+        }
+        return count
+    }, 0)
+}
 
 function initSQRT(N) {
     const c = new Array(N)
@@ -13,22 +23,16 @@ function initSQRT(N) {
     return c
 }
 
-const SQRT = initSQRT(sampleSize)
-
-const initCOS = function (N) {
-    const cosines = new Array(N)
-    for (let k = 0; k < N; k++) {
-        cosines[k] = new Array(N)
-        for (let n = 0; n < N; n++) {
-            cosines[k][n] = Math.cos(((2 * k + 1) / (2.0 * N)) * n * Math.PI)
-        }
-    }
-    return cosines
-}
+const initCOS = (N) =>
+    Array.from({ length: N }, (_, k) =>
+        Array.from({ length: N }, (_, n) =>
+            Math.cos(((2 * k + 1) / (2.0 * N)) * n * Math.PI)
+        )
+    )
 
 const COS = initCOS(sampleSize)
 
-function applyDCT(f, size) {
+const applyDCT = function (f, size, SQRT) {
     const N = size
 
     const F = new Array(N)
@@ -48,42 +52,7 @@ function applyDCT(f, size) {
     return F
 }
 
-/**
- * Calculates the perceptual hash (phash) of an image using the given sharpOptions.
- * @param {string} image - The path or buffer of the image.
- * @param {object} sharpOptions - The options to be passed to the sharp library.
- * @returns {Promise<string>} The calculated perceptual hash of the image.
- */
-async function phash(image, digest = 'binary') {
-    const data = await sharp(image, {})
-        .greyscale()
-        .resize(sampleSize, sampleSize, { fit: 'fill' })
-        .rotate()
-        .raw()
-        .toBuffer()
-
-    // copy signal
-    const s = new Array(sampleSize)
-    for (let x = 0; x < sampleSize; x++) {
-        s[x] = new Array(sampleSize)
-        for (let y = 0; y < sampleSize; y++) {
-            s[x][y] = data[sampleSize * y + x]
-        }
-    }
-
-    // apply 2D DCT II
-    const dct = applyDCT(s, sampleSize)
-
-    // get AVG on high frequencies
-    let totalSum = 0
-    for (let x = 0; x < lowSize; x++) {
-        for (let y = 0; y < lowSize; y++) {
-            totalSum += dct[x + 1][y + 1]
-        }
-    }
-
-    const avg = totalSum / (lowSize * lowSize)
-
+const hashResults = (dct, avg) => {
     // compute hash
     let fingerprintBinary = ''
 
@@ -100,11 +69,42 @@ async function phash(image, digest = 'binary') {
         fingerprintHex += parseInt(nibble, 2).toString(16)
     }
 
+    return { fingerprintBinary, fingerprintHex }
+}
+
+
+async function phash(image, digest = 'binary') {
+    const data = await sharp(image, {})
+        .greyscale()
+        .resize(sampleSize, sampleSize, { fit: 'fill' })
+        .rotate()
+        .raw()
+        .toBuffer()
+
+    const signal = Array.from({ length: sampleSize }, (_, x) =>
+        Array.from({ length: sampleSize }, (_, y) => data[sampleSize * y + x])
+    )
+
+    // apply 2D DCT II
+    const dct = applyDCT(signal, sampleSize, initSQRT(sampleSize))
+
+    // get AVG on high frequencies
+    const totalSum = Array.from({ length: lowSize }, (_, x) =>
+        Array.from({ length: lowSize }, (_, y) => dct[x + 1][y + 1])
+    )
+        .flat()
+        .reduce((sum, value) => sum + value, 0)
+
+    const avg = totalSum / (lowSize * lowSize)
+
+    const { fingerprintBinary, fingerprintHex } = hashResults(dct, avg)
     if (digest === 'binary') {
         return fingerprintBinary
-    } else {
+    } else if (digest === 'hex') {
         return fingerprintHex
+    } else {
+        return { fingerprintBinary, fingerprintHex }
     }
 }
 
-export { phash, distance}
+export { phash, calculateDistance }

@@ -1,5 +1,5 @@
 {
-    "name": "sharp-phash",
+    "name": "Grandaddys_Original_Louisiana-Style_Spicy_Heirloom_Image_Hash_Recipe",
     "version": "2.2.0",
     "description": "Perceptual hash implementation",
     "type": "module",
@@ -19,7 +19,7 @@
         "perceptual"
     ],
     "author": "Denis Bardadym <bardadymchik@gmail.com>, EB",
-    "license": "MIT",
+    "license": "The Unlicense",
     "devDependencies": {
         "eslint": "^8.29.0",
         "eslint-config-prettier": "^8.5.0",

@@ -1,12 +1,6 @@
-# sharp-phash
+# Grandaddy's Original Louisiana-Style Spicy Heirloom Image Hash Recipe
 
-Sharp-based implementation of perceptual hash (phash) algorithm described [there](http://www.hackerfactor.com/blog/?/archives/432-Looks-Like-It.html).
-
-## Installation
-
-```sh
-yarn add sharp-phash
-```
+Sharp-based implementation of perceptual hash (phash) algorithm. My main man Denis wrote this and I just refactored it.
 
 ## How to use
 Takes in file buffer and returns a promise that resolves to a binary phash.
@@ -26,3 +20,6 @@ const main = async () => {
 }
 main()
 ```
+
+## How it works
+I'm not really sure.

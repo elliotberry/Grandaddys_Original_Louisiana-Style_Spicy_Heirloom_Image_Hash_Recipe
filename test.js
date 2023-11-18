@@ -1,5 +1,4 @@
-import phash from "./index.js";
-import dist from "./distance.js";
+import { phash, calculateDistance } from "./index.js";
 import fs from "fs/promises";
 
 const go = async () => {
@@ -10,7 +9,7 @@ const go = async () => {
   const hash2 = await phash(img2);
 
   console.log(hash1, hash2);
-  console.log(dist(hash1, hash2));
+  console.log(calculateDistance(hash1, hash2));
 }
 
 go();
