@@ -1,6 +1,8 @@
-# Grandaddy's Original Louisiana-Style Spicy Heirloom Image Hash Recipe
+# dads-original-perceptual-hash
 
-Sharp-based implementation of perceptual hash (phash) algorithm. My main man Denis wrote this and I just refactored it.
+Now with a spicy flavor.
+
+Sharp-based implementation of perceptual hash (phash) algorithm. My main man Denis wrote this and I just refactored it and added some tests.
 
 ## How to use
 Takes in file buffer and returns a promise that resolves to a binary phash.
@@ -22,4 +24,4 @@ main()
 ```
 
 ## How it works
-I'm not really sure.
+I'm not really sure. Math, maybe?
