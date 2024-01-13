@@ -1,5 +1,7 @@
 # dads-original-perceptual-hash
 
+![](./logo.png)
+
 Now with a spicy flavor.
 
 Sharp-based implementation of perceptual hash (phash) algorithm. My main man Denis wrote this and I just refactored it and added some tests.
