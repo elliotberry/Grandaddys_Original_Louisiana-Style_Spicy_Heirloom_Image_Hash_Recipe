@@ -25,5 +25,5 @@ const main = async () => {
 main()
 ```
 
-## How it works
+## How it really works
 I'm not really sure. Math, maybe?
