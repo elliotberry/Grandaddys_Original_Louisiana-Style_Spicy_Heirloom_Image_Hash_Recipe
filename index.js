@@ -1,4 +1,5 @@
 import sharp from 'sharp'
+import applyDCT from './applyDCT.js'
 
 const sampleSize = 32
 const lowSize = 8
@@ -23,37 +24,7 @@ function initSQRT(N) {
     return c
 }
 
-const initCOS = (N) =>
-    Array.from({ length: N }, (_, k) =>
-        Array.from({ length: N }, (_, n) =>
-            Math.cos(((2 * k + 1) / (2.0 * N)) * n * Math.PI)
-        )
-    )
-
-const COS = initCOS(sampleSize)
-
-const applyDCT = function (f, size, SQRT) {
-    const N = size
-
-    const F = new Array(N)
-    for (let u = 0; u < N; u++) {
-        F[u] = new Array(N)
-        for (let v = 0; v < N; v++) {
-            let sum = 0
-            for (let i = 0; i < N; i++) {
-                for (let j = 0; j < N; j++) {
-                    sum += COS[i][u] * COS[j][v] * f[i][j]
-                }
-            }
-            sum *= (SQRT[u] * SQRT[v]) / 4
-            F[u][v] = sum
-        }
-    }
-    return F
-}
-
-const hashResults = (dct, avg) => {
-    // compute hash
+const hashResults = (dct, avg, digest = 'hex') => {
     let fingerprintBinary = ''
 
     for (let x = 0; x < lowSize; x++) {
@@ -62,18 +33,29 @@ const hashResults = (dct, avg) => {
         }
     }
 
-    // Convert binary string to hexadecimal
-    let fingerprintHex = ''
-    for (let i = 0; i < fingerprintBinary.length; i += 4) {
-        let nibble = fingerprintBinary.substring(i, i + 4)
-        fingerprintHex += parseInt(nibble, 2).toString(16)
-    }
+    if (digest === 'binary') {
+        return fingerprintBinary
+    } else if (digest === 'hex') {
+        // Convert binary string to hexadecimal
+        let fingerprintHex = ''
+        for (let i = 0; i < fingerprintBinary.length; i += 4) {
+            let nibble = fingerprintBinary.substring(i, i + 4)
+            fingerprintHex += parseInt(nibble, 2).toString(16)
+        }
 
-    return { fingerprintBinary, fingerprintHex }
+        return fingerprintHex
+    }
+    else {
+        throw new Error('Invalid digest type')
+    }
 }
 
-
 async function phash(image, digest = 'binary') {
+    
+    if (digest !== 'binary' && digest !== 'hex') {
+        throw new Error('Invalid digest type')
+    }
+
     const data = await sharp(image, {})
         .greyscale()
         .resize(sampleSize, sampleSize, { fit: 'fill' })
@@ -85,7 +67,7 @@ async function phash(image, digest = 'binary') {
         Array.from({ length: sampleSize }, (_, y) => data[sampleSize * y + x])
     )
 
-    // apply 2D DCT II
+    // apply 2D discrete cosine transform II
     const dct = applyDCT(signal, sampleSize, initSQRT(sampleSize))
 
     // get AVG on high frequencies
@@ -97,14 +79,8 @@ async function phash(image, digest = 'binary') {
 
     const avg = totalSum / (lowSize * lowSize)
 
-    const { fingerprintBinary, fingerprintHex } = hashResults(dct, avg)
-    if (digest === 'binary') {
-        return fingerprintBinary
-    } else if (digest === 'hex') {
-        return fingerprintHex
-    } else {
-        return { fingerprintBinary, fingerprintHex }
-    }
+    return hashResults(dct, avg, digest)
+   
 }
 
 export { phash, calculateDistance }
