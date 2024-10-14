@@ -1,4 +1,5 @@
 import sharp from 'sharp'
+
 import applyDCT from './applyDCT.js'
 
 const sampleSize = 32
@@ -17,10 +18,10 @@ const calculateDistance = function (a, b) {
 
 function initSQRT(N) {
     const c = new Array(N)
-    for (let i = 1; i < N; i++) {
-        c[i] = 1
+    for (let index = 1; index < N; index++) {
+        c[index] = 1
     }
-    c[0] = 1 / Math.sqrt(2.0)
+    c[0] = 1 / Math.sqrt(2)
     return c
 }
 
@@ -38,9 +39,9 @@ const hashResults = (dct, avg, digest = 'hex') => {
     } else if (digest === 'hex') {
         // Convert binary string to hexadecimal
         let fingerprintHex = ''
-        for (let i = 0; i < fingerprintBinary.length; i += 4) {
-            let nibble = fingerprintBinary.substring(i, i + 4)
-            fingerprintHex += parseInt(nibble, 2).toString(16)
+        for (let index = 0; index < fingerprintBinary.length; index += 4) {
+            const nibble = fingerprintBinary.substring(index, index + 4)
+            fingerprintHex += Number.parseInt(nibble, 2).toString(16)
         }
 
         return fingerprintHex
@@ -83,4 +84,4 @@ async function phash(image, digest = 'binary') {
    
 }
 
-export { phash, calculateDistance }
+export { calculateDistance,phash }
